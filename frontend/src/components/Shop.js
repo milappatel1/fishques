@@ -70,6 +70,18 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
     }
   };
 
+  const groupUpgradesByTier = (upgrades) => {
+    const tiers = {};
+    upgrades.forEach(upgrade => {
+      const tier = upgrade.tier || 1;
+      if (!tiers[tier]) tiers[tier] = [];
+      tiers[tier].push(upgrade);
+    });
+    return tiers;
+  };
+
+  const upgradesByTier = groupUpgradesByTier(upgrades);
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
