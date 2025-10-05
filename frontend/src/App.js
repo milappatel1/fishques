@@ -79,6 +79,57 @@ function App() {
     }
   };
 
+  const handleUpdateFishingState = (newState, castingProgress, reelingProgress) => {
+    if (typeof castingProgress === 'function') {
+      setGameState(prev => ({
+        ...prev,
+        fishingState: newState,
+        castingProgress: castingProgress(prev)
+      }));
+    } else if (typeof reelingProgress === 'function') {
+      setGameState(prev => ({
+        ...prev,
+        fishingState: newState,
+        reelingProgress: reelingProgress(prev)
+      }));
+    } else {
+      setGameState(prev => ({
+        ...prev,
+        fishingState: newState,
+        castingProgress: castingProgress !== undefined ? castingProgress : prev.castingProgress,
+        reelingProgress: reelingProgress !== undefined ? reelingProgress : prev.reelingProgress
+      }));
+    }
+  };
+
+  const handleResetGame = () => {
+    const confirmReset = window.confirm(
+      "Are you sure you want to reset your game? This will delete all progress and cannot be undone!"
+    );
+    
+    if (confirmReset) {
+      localStorage.removeItem('fishingClickerGame');
+      setGameState({
+        ...mockGameState,
+        fish: 0,
+        coins: 0,
+        fishPerSecond: 0,
+        fishPerClick: 1,
+        totalFishCaught: 0,
+        prestigeLevel: 0,
+        fishingState: 'ready',
+        castingProgress: 0,
+        reelingProgress: 0
+      });
+      
+      toast({
+        title: "Game Reset!",
+        description: "Your fishing adventure begins anew.",
+        duration: 3000,
+      });
+    }
+  };
+
   const handleSellFish = (coinValue) => {
     setGameState(prev => ({
       ...prev,
