@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Progress } from './ui/progress';
-import { BarChart3, Fish, Clock, TrendingUp, Target, Award, RotateCcw } from 'lucide-react';
+import { ChartBar as BarChart3, Fish, Clock, TrendingUp, Target, Award, RotateCcw } from 'lucide-react';
 import { Button } from './ui/button';
 
 const Stats = ({ gameState, onResetGame }) => {
