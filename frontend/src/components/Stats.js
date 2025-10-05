@@ -66,11 +66,24 @@ const Stats = ({ gameState, onResetGame }) => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-blue-900 mb-2 flex items-center gap-2">
-          <BarChart3 className="w-8 h-8" />
-          Fishing Statistics
-        </h1>
-        <p className="text-blue-700">Track your fishing progress and achievements</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+              <BarChart3 className="w-8 h-8" />
+              Fishing Statistics
+            </h1>
+            <p className="text-blue-700">Track your fishing progress and achievements</p>
+          </div>
+          
+          <Button 
+            onClick={onResetGame}
+            variant="destructive"
+            className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Reset Game
+          </Button>
+        </div>
       </div>
 
       {/* Main Stats Grid */}
