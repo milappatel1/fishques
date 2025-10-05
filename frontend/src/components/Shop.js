@@ -186,74 +186,88 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
         </TabsContent>
 
         <TabsContent value="upgrades">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {upgrades.map((upgrade) => {
-              const canAfford = gameState.coins >= upgrade.cost && !upgrade.purchased;
-              
-              return (
-                <Card key={upgrade.id} className={`hover:shadow-lg transition-all duration-200 ${
-                  upgrade.purchased 
-                    ? 'border-yellow-200 bg-yellow-50' 
-                    : canAfford 
-                      ? 'border-green-200 hover:border-green-300' 
-                      : 'border-gray-200 opacity-75'
-                }`}>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{getIcon(upgrade.icon)}</span>
-                        <span className="text-lg">{upgrade.name}</span>
-                      </div>
-                      {upgrade.purchased && (
-                        <Badge className="bg-yellow-500 hover:bg-yellow-600">
-                          <Star className="w-3 h-3 mr-1" />
-                          Purchased
-                        </Badge>
-                      )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 mb-4">{upgrade.description}</p>
+          <div className="space-y-8">
+            {Object.entries(upgradesByTier).map(([tier, tierUpgrades]) => (
+              <div key={tier}>
+                <h3 className="text-2xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                  <Star className="w-6 h-6" />
+                  Tier {tier} Upgrades
+                  <Badge variant="outline" className="ml-2">
+                    {tierUpgrades.filter(u => u.purchased).length}/{tierUpgrades.length} Owned
+                  </Badge>
+                </h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {tierUpgrades.map((upgrade) => {
+                    const canAfford = gameState.coins >= upgrade.cost && !upgrade.purchased;
                     
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Effect:</span>
-                        <span className="font-semibold">
-                          {upgrade.multiplier}x multiplier
-                        </span>
-                      </div>
-                      {!upgrade.purchased && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Cost:</span>
-                          <span className={`font-bold ${canAfford ? 'text-green-600' : 'text-red-600'}`}>
-                            {formatNumber(upgrade.cost)} coins
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <Button 
-                      onClick={() => purchaseUpgrade(upgrade.id)}
-                      disabled={!canAfford || upgrade.purchased}
-                      className={`w-full ${
+                    return (
+                      <Card key={upgrade.id} className={`hover:shadow-lg transition-all duration-200 ${
                         upgrade.purchased 
-                          ? 'bg-yellow-500 cursor-default' 
+                          ? 'border-yellow-200 bg-yellow-50' 
                           : canAfford 
-                            ? 'bg-green-600 hover:bg-green-700' 
-                            : 'bg-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {upgrade.purchased 
-                        ? 'Purchased!' 
-                        : canAfford 
-                          ? 'Purchase' 
-                          : 'Not enough coins'
-                      }
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                            ? 'border-green-200 hover:border-green-300' 
+                            : 'border-gray-200 opacity-75'
+                      }`}>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">{getIcon(upgrade.icon)}</span>
+                              <span className="text-base font-semibold">{upgrade.name}</span>
+                            </div>
+                            {upgrade.purchased && (
+                              <Badge className="bg-yellow-500 hover:bg-yellow-600 text-xs">
+                                ✓
+                              </Badge>
+                            )}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <p className="text-gray-600 mb-3 text-sm">{upgrade.description}</p>
+                          
+                          <div className="space-y-1 mb-3 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Effect:</span>
+                              <span className="font-semibold">
+                                {upgrade.multiplier}x
+                              </span>
+                            </div>
+                            {!upgrade.purchased && (
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Cost:</span>
+                                <span className={`font-bold ${canAfford ? 'text-green-600' : 'text-red-600'}`}>
+                                  {formatNumber(upgrade.cost)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          <Button 
+                            onClick={() => purchaseUpgrade(upgrade.id)}
+                            disabled={!canAfford || upgrade.purchased}
+                            size="sm"
+                            className={`w-full ${
+                              upgrade.purchased 
+                                ? 'bg-yellow-500 cursor-default' 
+                                : canAfford 
+                                  ? 'bg-green-600 hover:bg-green-700' 
+                                  : 'bg-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            {upgrade.purchased 
+                              ? 'Owned' 
+                              : canAfford 
+                                ? 'Buy' 
+                                : 'Locked'
+                            }
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </TabsContent>
       </Tabs>
