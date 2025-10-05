@@ -6,7 +6,10 @@ export const mockGameState = {
   fishPerSecond: 2.5,
   fishPerClick: 1,
   totalFishCaught: 1250,
-  prestigeLevel: 0
+  prestigeLevel: 0,
+  fishingState: 'ready', // 'ready', 'casting', 'reeling', 'caught'
+  castingProgress: 0,
+  reelingProgress: 0
 };
 
 export const mockInventory = [
