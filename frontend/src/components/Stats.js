@@ -68,11 +68,11 @@ const Stats = ({ gameState, onResetGame }) => {
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-2">
               <BarChart3 className="w-8 h-8" />
               Fishing Statistics
             </h1>
-            <p className="text-blue-700">Track your fishing progress and achievements</p>
+            <p className="text-slate-300">Track your fishing progress and achievements</p>
           </div>
           
           <Button 
@@ -88,101 +88,101 @@ const Stats = ({ gameState, onResetGame }) => {
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-900 to-blue-950 border-blue-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-blue-800">
+            <CardTitle className="flex items-center gap-2 text-blue-200">
               <Fish className="w-5 h-5" />
               Total Fish Caught
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-900 mb-2">
+            <div className="text-3xl font-bold text-blue-100 mb-2">
               {formatNumber(gameState.totalFishCaught)}
             </div>
-            <p className="text-sm text-blue-600">Lifetime catches</p>
+            <p className="text-sm text-blue-300">Lifetime catches</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-gradient-to-br from-green-900 to-green-950 border-green-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-green-800">
+            <CardTitle className="flex items-center gap-2 text-green-200">
               <TrendingUp className="w-5 h-5" />
               Fish Per Second
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-900 mb-2">
+            <div className="text-3xl font-bold text-green-100 mb-2">
               {gameState.fishPerSecond.toFixed(1)}
             </div>
-            <p className="text-sm text-green-600">Automatic generation</p>
+            <p className="text-sm text-green-300">Automatic generation</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+        <Card className="bg-gradient-to-br from-orange-900 to-orange-950 border-orange-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-orange-800">
+            <CardTitle className="flex items-center gap-2 text-orange-200">
               <Target className="w-5 h-5" />
               Click Efficiency
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-900 mb-2">
+            <div className="text-3xl font-bold text-orange-100 mb-2">
               {fishingEfficiency.toFixed(1)}%
             </div>
-            <p className="text-sm text-orange-600">Success rate</p>
+            <p className="text-sm text-orange-300">Success rate</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-gradient-to-br from-purple-900 to-purple-950 border-purple-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-purple-800">
+            <CardTitle className="flex items-center gap-2 text-purple-200">
               <Clock className="w-5 h-5" />
               Session Time
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-900 mb-2">
+            <div className="text-2xl font-bold text-purple-100 mb-2">
               {formatTime(sessionTime)}
             </div>
-            <p className="text-sm text-purple-600">Current session</p>
+            <p className="text-sm text-purple-300">Current session</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-200">
+        <Card className="bg-gradient-to-br from-cyan-900 to-cyan-950 border-cyan-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-cyan-800">
+            <CardTitle className="flex items-center gap-2 text-cyan-200">
               <Fish className="w-5 h-5" />
               Clicks This Session
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-cyan-900 mb-2">
+            <div className="text-3xl font-bold text-cyan-100 mb-2">
               {clicksThisSession}
             </div>
-            <p className="text-sm text-cyan-600">{averageClickRate.toFixed(1)} per minute</p>
+            <p className="text-sm text-cyan-300">{averageClickRate.toFixed(1)} per minute</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+        <Card className="bg-gradient-to-br from-yellow-900 to-yellow-950 border-yellow-700">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-yellow-800">
+            <CardTitle className="flex items-center gap-2 text-yellow-200">
               <Award className="w-5 h-5" />
               Prestige Level
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-yellow-900 mb-2">
+            <div className="text-3xl font-bold text-yellow-100 mb-2">
               {gameState.prestigeLevel}
             </div>
-            <p className="text-sm text-yellow-600">Rebirths completed</p>
+            <p className="text-sm text-yellow-300">Rebirths completed</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Achievements Section */}
-      <Card className="mb-8">
+      <Card className="mb-8 bg-slate-800 border-slate-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
+          <CardTitle className="flex items-center gap-2 text-slate-100">
             <Award className="w-6 h-6" />
             Achievements
           </CardTitle>
@@ -190,31 +190,31 @@ const Stats = ({ gameState, onResetGame }) => {
         <CardContent>
           <div className="space-y-4">
             {achievements.map((achievement, index) => (
-              <div key={index} className="flex items-center gap-4 p-4 rounded-lg border bg-gray-50">
+              <div key={index} className="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-900">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  achievement.completed ? 'bg-green-500' : 'bg-gray-300'
+                  achievement.completed ? 'bg-green-600' : 'bg-slate-700'
                 }`}>
                   {achievement.completed ? (
                     <Award className="w-6 h-6 text-white" />
                   ) : (
-                    <Award className="w-6 h-6 text-gray-600" />
+                    <Award className="w-6 h-6 text-slate-400" />
                   )}
                 </div>
-                
+
                 <div className="flex-1">
                   <h3 className={`font-semibold ${
-                    achievement.completed ? 'text-green-800' : 'text-gray-800'
+                    achievement.completed ? 'text-green-300' : 'text-slate-300'
                   }`}>
                     {achievement.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
-                  
+                  <p className="text-sm text-slate-400 mb-2">{achievement.description}</p>
+
                   <div className="flex items-center gap-2">
-                    <Progress 
-                      value={(achievement.progress / achievement.target) * 100} 
+                    <Progress
+                      value={(achievement.progress / achievement.target) * 100}
                       className="flex-1 h-2"
                     />
-                    <span className="text-sm font-medium text-gray-700 min-w-fit">
+                    <span className="text-sm font-medium text-slate-300 min-w-fit">
                       {formatNumber(achievement.progress)} / {formatNumber(achievement.target)}
                     </span>
                   </div>

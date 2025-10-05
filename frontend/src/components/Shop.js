@@ -4,11 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { ShoppingBag, TrendingUp, Zap, Star } from 'lucide-react';
-import { mockBuildings, mockUpgrades } from '../mock';
-
 const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
-  const [buildings, setBuildings] = useState(mockBuildings);
-  const [upgrades, setUpgrades] = useState(mockUpgrades);
+  const buildings = gameState.buildings || [];
+  const upgrades = gameState.upgrades || [];
 
   const formatNumber = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -68,18 +66,15 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
 
   const purchaseBuilding = (buildingId, quantity = 1) => {
     const building = buildings.find(b => b.id === buildingId);
-    if (building && gameState.coins >= (building.cost * quantity)) {
-      // Purchase multiple buildings
-      for (let i = 0; i < quantity; i++) {
-        onPurchaseBuilding(building);
-      }
-      setBuildings(prev => 
-        prev.map(b => 
-          b.id === buildingId 
-            ? { ...b, owned: b.owned + quantity, cost: Math.floor(b.cost * Math.pow(1.15, quantity)) }
-            : b
-        )
+    const totalCost = getBulkCost(building, quantity);
+    if (building && gameState.coins >= totalCost) {
+      const updatedBuildings = buildings.map(b =>
+        b.id === buildingId
+          ? { ...b, owned: b.owned + quantity, cost: Math.floor(b.cost * Math.pow(1.15, quantity)) }
+          : b
       );
+      const buildingWithTotalCost = { ...building, cost: totalCost, multiplier: building.multiplier * quantity };
+      onPurchaseBuilding(buildingWithTotalCost, updatedBuildings);
     }
   };
 
@@ -96,14 +91,12 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
   const purchaseUpgrade = (upgradeId) => {
     const upgrade = upgrades.find(u => u.id === upgradeId);
     if (upgrade && gameState.coins >= upgrade.cost && !upgrade.purchased) {
-      onPurchaseUpgrade(upgrade);
-      setUpgrades(prev => 
-        prev.map(u => 
-          u.id === upgradeId 
-            ? { ...u, purchased: true }
-            : u
-        )
+      const updatedUpgrades = upgrades.map(u =>
+        u.id === upgradeId
+          ? { ...u, purchased: true }
+          : u
       );
+      onPurchaseUpgrade(upgrade, updatedUpgrades);
     }
   };
 
@@ -122,11 +115,11 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-2">
           <ShoppingBag className="w-8 h-8" />
           Fishing Shop
         </h1>
-        <p className="text-blue-700">Upgrade your fishing operation</p>
+        <p className="text-slate-300">Upgrade your fishing operation</p>
       </div>
 
       <Tabs defaultValue="buildings" className="w-full">
@@ -147,8 +140,8 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
               const canAfford = gameState.coins >= building.cost;
               
               return (
-                <Card key={building.id} className={`hover:shadow-lg transition-all duration-200 ${
-                  canAfford ? 'border-green-200 hover:border-green-300' : 'border-gray-200 opacity-75'
+                <Card key={building.id} className={`hover:shadow-lg transition-all duration-200 bg-slate-800 ${
+                  canAfford ? 'border-green-700 hover:border-green-600' : 'border-slate-700 opacity-75'
                 }`}>
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center justify-between">
@@ -164,19 +157,19 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 mb-4">{building.description}</p>
-                    
+                    <p className="text-slate-300 mb-4">{building.description}</p>
+
                     <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Effect:</span>
-                        <span className="font-semibold">
-                          {building.effect === 'fishPerClick' ? 'Fish per click' : 'Fish per second'} 
+                        <span className="text-slate-400">Effect:</span>
+                        <span className="font-semibold text-slate-200">
+                          {building.effect === 'fishPerClick' ? 'Fish per click' : 'Fish per second'}
                           +{building.multiplier}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Cost:</span>
-                        <span className={`font-bold ${canAfford ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className="text-slate-400">Cost:</span>
+                        <span className={`font-bold ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
                           {formatNumber(building.cost)} coins
                         </span>
                       </div>
@@ -226,10 +219,10 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
           <div className="space-y-8">
             {Object.entries(upgradesByTier).map(([tier, tierUpgrades]) => (
               <div key={tier}>
-                <h3 className="text-2xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-slate-100 mb-4 flex items-center gap-2">
                   <Star className="w-6 h-6" />
                   Tier {tier} Upgrades
-                  <Badge variant="outline" className="ml-2">
+                  <Badge variant="outline" className="ml-2 bg-slate-800 text-slate-200 border-slate-600">
                     {tierUpgrades.filter(u => u.purchased).length}/{tierUpgrades.length} Owned
                   </Badge>
                 </h3>
@@ -240,11 +233,11 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
                     
                     return (
                       <Card key={upgrade.id} className={`hover:shadow-lg transition-all duration-200 ${
-                        upgrade.purchased 
-                          ? 'border-yellow-200 bg-yellow-50' 
-                          : canAfford 
-                            ? 'border-green-200 hover:border-green-300' 
-                            : 'border-gray-200 opacity-75'
+                        upgrade.purchased
+                          ? 'border-yellow-700 bg-yellow-900/30'
+                          : canAfford
+                            ? 'border-green-700 hover:border-green-600 bg-slate-800'
+                            : 'border-slate-700 opacity-75 bg-slate-800'
                       }`}>
                         <CardHeader className="pb-3">
                           <CardTitle className="flex items-center justify-between text-sm">
@@ -260,19 +253,19 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
-                          <p className="text-gray-600 mb-3 text-sm">{upgrade.description}</p>
-                          
+                          <p className="text-slate-300 mb-3 text-sm">{upgrade.description}</p>
+
                           <div className="space-y-1 mb-3 text-xs">
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Effect:</span>
-                              <span className="font-semibold">
+                              <span className="text-slate-400">Effect:</span>
+                              <span className="font-semibold text-slate-200">
                                 {upgrade.multiplier}x
                               </span>
                             </div>
                             {!upgrade.purchased && (
                               <div className="flex justify-between">
-                                <span className="text-gray-600">Cost:</span>
-                                <span className={`font-bold ${canAfford ? 'text-green-600' : 'text-red-600'}`}>
+                                <span className="text-slate-400">Cost:</span>
+                                <span className={`font-bold ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
                                   {formatNumber(upgrade.cost)}
                                 </span>
                               </div>

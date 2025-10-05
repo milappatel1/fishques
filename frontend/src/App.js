@@ -12,7 +12,12 @@ import { mockGameState, fishTypes } from './mock';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('game');
-  const [gameState, setGameState] = useState(mockGameState);
+  const [gameState, setGameState] = useState({
+    ...mockGameState,
+    inventory: mockGameState.inventory || [],
+    buildings: mockGameState.buildings || [],
+    upgrades: mockGameState.upgrades || []
+  });
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -48,7 +53,6 @@ function App() {
   }, [gameState.fishPerSecond]);
 
   const handleFishCatch = () => {
-    // Determine which fish was caught based on rarity chances
     const randomValue = Math.random();
     let cumulativeChance = 0;
     let caughtFish = null;
@@ -62,13 +66,36 @@ function App() {
     }
 
     if (caughtFish) {
-      setGameState(prev => ({
-        ...prev,
-        fish: prev.fish + prev.fishPerClick,
-        totalFishCaught: prev.totalFishCaught + prev.fishPerClick
-      }));
+      setGameState(prev => {
+        const existingFish = prev.inventory.find(f => f.name === caughtFish.name);
+        let updatedInventory;
 
-      // Show toast notification for rare catches
+        if (existingFish) {
+          updatedInventory = prev.inventory.map(f =>
+            f.name === caughtFish.name
+              ? { ...f, quantity: f.quantity + prev.fishPerClick }
+              : f
+          );
+        } else {
+          const fishEmojis = { 'Common Trout': '🐟', 'Golden Bass': '🐠', 'Rainbow Salmon': '🌈', 'Ancient Cod': '💎', 'Legendary Tuna': '⭐' };
+          updatedInventory = [...prev.inventory, {
+            id: Date.now(),
+            name: caughtFish.name,
+            quantity: prev.fishPerClick,
+            value: caughtFish.value,
+            rarity: caughtFish.rarity,
+            image: fishEmojis[caughtFish.name] || '🐟'
+          }];
+        }
+
+        return {
+          ...prev,
+          fish: prev.fish + prev.fishPerClick,
+          totalFishCaught: prev.totalFishCaught + prev.fishPerClick,
+          inventory: updatedInventory
+        };
+      });
+
       if (caughtFish.rarity !== 'common') {
         toast({
           title: `${caughtFish.rarity.toUpperCase()} CATCH!`,
@@ -119,7 +146,10 @@ function App() {
         prestigeLevel: 0,
         fishingState: 'ready',
         castingProgress: 0,
-        reelingProgress: 0
+        reelingProgress: 0,
+        inventory: [],
+        buildings: mockGameState.buildings,
+        upgrades: mockGameState.upgrades
       });
       
       toast({
@@ -130,10 +160,11 @@ function App() {
     }
   };
 
-  const handleSellFish = (coinValue) => {
+  const handleSellFish = (coinValue, updatedInventory) => {
     setGameState(prev => ({
       ...prev,
-      coins: prev.coins + coinValue
+      coins: prev.coins + coinValue,
+      inventory: updatedInventory
     }));
 
     toast({
@@ -143,16 +174,17 @@ function App() {
     });
   };
 
-  const handlePurchaseBuilding = (building) => {
+  const handlePurchaseBuilding = (building, updatedBuildings) => {
     setGameState(prev => ({
       ...prev,
       coins: prev.coins - building.cost,
-      fishPerSecond: building.effect === 'fishPerSecond' 
+      fishPerSecond: building.effect === 'fishPerSecond'
         ? prev.fishPerSecond + building.multiplier
         : prev.fishPerSecond,
       fishPerClick: building.effect === 'fishPerClick'
         ? prev.fishPerClick + building.multiplier
-        : prev.fishPerClick
+        : prev.fishPerClick,
+      buildings: updatedBuildings
     }));
 
     toast({
@@ -162,10 +194,11 @@ function App() {
     });
   };
 
-  const handlePurchaseUpgrade = (upgrade) => {
+  const handlePurchaseUpgrade = (upgrade, updatedUpgrades) => {
     setGameState(prev => ({
       ...prev,
-      coins: prev.coins - upgrade.cost
+      coins: prev.coins - upgrade.cost,
+      upgrades: updatedUpgrades
     }));
 
     toast({
@@ -205,7 +238,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-100 via-blue-50 to-cyan-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex flex-col">
       <GameHeader gameState={gameState} />
       <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
       

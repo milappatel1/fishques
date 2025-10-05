@@ -3,19 +3,17 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Coins, Package } from 'lucide-react';
-import { mockInventory } from '../mock';
-
 const Inventory = ({ gameState, onSellFish }) => {
-  const [inventory, setInventory] = useState(mockInventory);
+  const inventory = gameState.inventory || [];
 
   const getRarityColor = (rarity) => {
     switch (rarity) {
-      case 'common': return 'bg-gray-100 text-gray-800 border-gray-300';
-      case 'uncommon': return 'bg-green-100 text-green-800 border-green-300';
-      case 'rare': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'epic': return 'bg-purple-100 text-purple-800 border-purple-300';
-      case 'legendary': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'common': return 'bg-gray-700 text-gray-200 border-gray-600';
+      case 'uncommon': return 'bg-green-900 text-green-200 border-green-700';
+      case 'rare': return 'bg-blue-900 text-blue-200 border-blue-700';
+      case 'epic': return 'bg-purple-900 text-purple-200 border-purple-700';
+      case 'legendary': return 'bg-yellow-900 text-yellow-200 border-yellow-700';
+      default: return 'bg-gray-700 text-gray-200 border-gray-600';
     }
   };
 
@@ -23,15 +21,14 @@ const Inventory = ({ gameState, onSellFish }) => {
     const fish = inventory.find(f => f.id === fishId);
     if (fish && fish.quantity >= quantity) {
       const totalValue = fish.value * quantity;
-      onSellFish(totalValue);
-      
-      setInventory(prev => 
-        prev.map(f => 
-          f.id === fishId 
+      const updatedInventory = inventory
+        .map(f =>
+          f.id === fishId
             ? { ...f, quantity: f.quantity - quantity }
             : f
-        ).filter(f => f.quantity > 0)
-      );
+        )
+        .filter(f => f.quantity > 0);
+      onSellFish(totalValue, updatedInventory);
     }
   };
 
@@ -49,10 +46,9 @@ const Inventory = ({ gameState, onSellFish }) => {
       const confirmSell = window.confirm(
         `Are you sure you want to sell all fish for ${totalValue} coins?`
       );
-      
+
       if (confirmSell) {
-        onSellFish(totalValue);
-        setInventory([]);
+        onSellFish(totalValue, []);
       }
     }
   };
@@ -60,25 +56,25 @@ const Inventory = ({ gameState, onSellFish }) => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-blue-900 mb-2 flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-2">
           <Package className="w-8 h-8" />
           Fish Inventory
         </h1>
-        <p className="text-blue-700">Manage and sell your caught fish</p>
-        
-        <Card className="mt-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+        <p className="text-slate-300">Manage and sell your caught fish</p>
+
+        <Card className="mt-4 bg-gradient-to-r from-yellow-900 to-orange-900 border-yellow-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Coins className="w-6 h-6 text-yellow-600" />
-                <span className="font-semibold text-yellow-900">Total Inventory Value:</span>
+                <Coins className="w-6 h-6 text-yellow-300" />
+                <span className="font-semibold text-yellow-100">Total Inventory Value:</span>
               </div>
               <div className="flex items-center gap-4">
-                <div className="text-2xl font-bold text-yellow-800">
+                <div className="text-2xl font-bold text-yellow-200">
                   {totalValue} coins
                 </div>
                 {totalValue > 0 && (
-                  <Button 
+                  <Button
                     onClick={sellAllFish}
                     className="bg-red-600 hover:bg-red-700 text-white font-bold"
                   >
@@ -92,17 +88,17 @@ const Inventory = ({ gameState, onSellFish }) => {
       </div>
 
       {inventory.length === 0 ? (
-        <Card className="text-center p-8">
+        <Card className="text-center p-8 bg-slate-800 border-slate-700">
           <CardContent>
             <div className="text-6xl mb-4">🎣</div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">Empty Inventory</h3>
-            <p className="text-gray-500">Go catch some fish to fill your inventory!</p>
+            <h3 className="text-xl font-semibold text-slate-300 mb-2">Empty Inventory</h3>
+            <p className="text-slate-400">Go catch some fish to fill your inventory!</p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {inventory.map((fish) => (
-            <Card key={fish.id} className="hover:shadow-lg transition-shadow duration-200">
+            <Card key={fish.id} className="hover:shadow-lg transition-shadow duration-200 bg-slate-800 border-slate-700">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between">
                   <span className="text-lg">{fish.name}</span>
@@ -119,12 +115,12 @@ const Inventory = ({ gameState, onSellFish }) => {
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Value each:</span>
-                    <span className="font-semibold">{fish.value} coins</span>
+                    <span className="text-slate-400">Value each:</span>
+                    <span className="font-semibold text-slate-200">{fish.value} coins</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Total value:</span>
-                    <span className="font-bold text-green-600">{fish.value * fish.quantity} coins</span>
+                    <span className="text-slate-400">Total value:</span>
+                    <span className="font-bold text-green-400">{fish.value * fish.quantity} coins</span>
                   </div>
                 </div>
 

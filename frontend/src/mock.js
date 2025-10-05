@@ -1,24 +1,21 @@
 // Mock data for the fishing clicker game
 
 export const mockGameState = {
-  fish: 125,
-  coins: 45,
-  fishPerSecond: 2.5,
+  fish: 0,
+  coins: 0,
+  fishPerSecond: 0,
   fishPerClick: 1,
-  totalFishCaught: 1250,
+  totalFishCaught: 0,
   prestigeLevel: 0,
-  fishingState: 'ready', // 'ready', 'casting', 'reeling', 'caught'
+  fishingState: 'ready',
   castingProgress: 0,
-  reelingProgress: 0
+  reelingProgress: 0,
+  inventory: [],
+  buildings: mockBuildings,
+  upgrades: mockUpgrades
 };
 
-export const mockInventory = [
-  { id: 1, name: "Common Trout", quantity: 15, value: 2, rarity: "common", image: "🐟" },
-  { id: 2, name: "Golden Bass", quantity: 8, value: 5, rarity: "uncommon", image: "🐠" },
-  { id: 3, name: "Rainbow Salmon", quantity: 3, value: 12, rarity: "rare", image: "🌈" },
-  { id: 4, name: "Legendary Tuna", quantity: 1, value: 50, rarity: "legendary", image: "⭐" },
-  { id: 5, name: "Ancient Cod", quantity: 2, value: 25, rarity: "epic", image: "💎" }
-];
+export const mockInventory = [];
 
 export const mockBuildings = [
   {
@@ -26,7 +23,7 @@ export const mockBuildings = [
     name: "Fishing Rod",
     description: "A simple rod that increases fish per click",
     cost: 15,
-    owned: 3,
+    owned: 0,
     effect: "fishPerClick",
     multiplier: 1,
     icon: "fishing-rod"
@@ -36,7 +33,7 @@ export const mockBuildings = [
     name: "Fishing Net",
     description: "Automatically catches fish over time",
     cost: 100,
-    owned: 1,
+    owned: 0,
     effect: "fishPerSecond",
     multiplier: 0.5,
     icon: "net"

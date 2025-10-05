@@ -100,7 +100,7 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
       {/* Ocean Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-cyan-300 via-blue-400 to-blue-600 opacity-20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-900 via-blue-950 to-slate-950 opacity-40"></div>
       
       {/* Floating Fish Animation */}
       <div className="absolute top-10 left-10 animate-bounce">
@@ -114,16 +114,16 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
       </div>
 
       {/* Main Fishing Area */}
-      <Card className="bg-white/10 backdrop-blur-sm border-2 border-blue-300 shadow-2xl relative overflow-hidden">
+      <Card className="bg-slate-800/40 backdrop-blur-sm border-2 border-slate-600 shadow-2xl relative overflow-hidden">
         <CardContent className="p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-blue-900 mb-2">
+            <h2 className="text-2xl font-bold text-slate-100 mb-2">
               {gameState.fishingState === 'ready' && 'Cast Your Line!'}
               {gameState.fishingState === 'casting' && 'Casting...'}
               {gameState.fishingState === 'waiting' && 'Reel It In!'}
               {gameState.fishingState === 'reeling' && 'Reeling...'}
             </h2>
-            <p className="text-blue-700">
+            <p className="text-slate-300">
               {gameState.fishingState === 'ready' && 'Click "Cast" to start fishing'}
               {gameState.fishingState === 'casting' && 'Casting your line into the water...'}
               {gameState.fishingState === 'waiting' && 'Click "Reel In" to catch the fish!'}
@@ -136,7 +136,7 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
             <div className="mb-4 w-full max-w-md mx-auto">
               {gameState.fishingState === 'casting' && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm text-blue-700">
+                  <div className="flex justify-between text-sm text-slate-300">
                     <span>Casting Progress</span>
                     <span>{Math.round(gameState.castingProgress)}%</span>
                   </div>
@@ -145,7 +145,7 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
               )}
               {gameState.fishingState === 'reeling' && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm text-blue-700">
+                  <div className="flex justify-between text-sm text-slate-300">
                     <span>Reeling Progress</span>
                     <span>{Math.round(gameState.reelingProgress)}%</span>
                   </div>
@@ -216,7 +216,7 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-blue-800 font-medium">
+            <p className="text-slate-200 font-medium">
               Total Caught: {gameState.totalFishCaught.toLocaleString()}
             </p>
           </div>
