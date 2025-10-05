@@ -29,18 +29,31 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
     return icons[iconName] || '🎣';
   };
 
-  const purchaseBuilding = (buildingId) => {
+  const purchaseBuilding = (buildingId, quantity = 1) => {
     const building = buildings.find(b => b.id === buildingId);
-    if (building && gameState.coins >= building.cost) {
-      onPurchaseBuilding(building);
+    if (building && gameState.coins >= (building.cost * quantity)) {
+      // Purchase multiple buildings
+      for (let i = 0; i < quantity; i++) {
+        onPurchaseBuilding(building);
+      }
       setBuildings(prev => 
         prev.map(b => 
           b.id === buildingId 
-            ? { ...b, owned: b.owned + 1, cost: Math.floor(b.cost * 1.15) }
+            ? { ...b, owned: b.owned + quantity, cost: Math.floor(b.cost * Math.pow(1.15, quantity)) }
             : b
         )
       );
     }
+  };
+
+  const getBulkCost = (building, quantity) => {
+    let totalCost = 0;
+    let currentCost = building.cost;
+    for (let i = 0; i < quantity; i++) {
+      totalCost += currentCost;
+      currentCost = Math.floor(currentCost * 1.15);
+    }
+    return totalCost;
   };
 
   const purchaseUpgrade = (upgradeId) => {
