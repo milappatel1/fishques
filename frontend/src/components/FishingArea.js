@@ -1,25 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
+import { Progress } from './ui/progress';
 
-const FishingArea = ({ onCatch, gameState }) => {
+const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
   const [isClicking, setIsClicking] = useState(false);
   const [floatingNumbers, setFloatingNumbers] = useState([]);
   const [ripples, setRipples] = useState([]);
+  const [castingTimer, setCastingTimer] = useState(null);
+  const [reelingTimer, setReelingTimer] = useState(null);
 
-  const handleClick = (e) => {
+  const handleCast = () => {
+    if (gameState.fishingState !== 'ready') return;
+    
     setIsClicking(true);
-    setTimeout(() => setIsClicking(false), 150);
+    onUpdateFishingState('casting', 0, 0);
     
+    // Start casting progress
+    const timer = setInterval(() => {
+      onUpdateFishingState('casting', prev => {
+        const newProgress = prev.castingProgress + 10;
+        if (newProgress >= 100) {
+          clearInterval(timer);
+          onUpdateFishingState('waiting', 100, 0);
+          setTimeout(() => setIsClicking(false), 150);
+          return 100;
+        }
+        return newProgress;
+      });
+    }, 100);
+    
+    setCastingTimer(timer);
+  };
+
+  const handleReel = () => {
+    if (gameState.fishingState !== 'waiting') return;
+    
+    setIsClicking(true);
+    onUpdateFishingState('reeling', gameState.castingProgress, 0);
+    
+    // Start reeling progress  
+    const timer = setInterval(() => {
+      onUpdateFishingState('reeling', gameState.castingProgress, prev => {
+        const newProgress = prev.reelingProgress + 8;
+        if (newProgress >= 100) {
+          clearInterval(timer);
+          // Fish caught!
+          completeFishing();
+          return 100;
+        }
+        return newProgress;
+      });
+    }, 100);
+    
+    setReelingTimer(timer);
+  };
+
+  const completeFishing = () => {
     // Create floating number effect
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
     const newFloating = {
       id: Date.now(),
-      x,
-      y,
+      x: 150,
+      y: 100,
       value: `+${gameState.fishPerClick}`
     };
     
@@ -31,8 +73,8 @@ const FishingArea = ({ onCatch, gameState }) => {
     // Create ripple effect
     const newRipple = {
       id: Date.now() + 1,
-      x,
-      y
+      x: 150,
+      y: 150
     };
     
     setRipples(prev => [...prev, newRipple]);
@@ -41,7 +83,19 @@ const FishingArea = ({ onCatch, gameState }) => {
     }, 600);
     
     onCatch();
+    setTimeout(() => {
+      onUpdateFishingState('ready', 0, 0);
+      setIsClicking(false);
+    }, 500);
   };
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (castingTimer) clearInterval(castingTimer);
+      if (reelingTimer) clearInterval(reelingTimer);
+    };
+  }, [castingTimer, reelingTimer]);
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
