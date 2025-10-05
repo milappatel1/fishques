@@ -198,7 +198,7 @@ function App() {
           />
         );
       case 'stats':
-        return <Stats gameState={gameState} />;
+        return <Stats gameState={gameState} onResetGame={handleResetGame} />;
       default:
         return <div>Page not found</div>;
     }
