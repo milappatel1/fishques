@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Progress } from './ui/progress';
-import { BarChart3, Fish, Clock, TrendingUp, Target, Award } from 'lucide-react';
+import { BarChart3, Fish, Clock, TrendingUp, Target, Award, RotateCcw } from 'lucide-react';
+import { Button } from './ui/button';
 
-const Stats = ({ gameState }) => {
+const Stats = ({ gameState, onResetGame }) => {
   const formatNumber = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
     if (num >= 1000) return (num / 1000).toFixed(2) + 'K';
