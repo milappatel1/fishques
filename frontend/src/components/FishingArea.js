@@ -117,20 +117,69 @@ const FishingArea = ({ onCatch, gameState, onUpdateFishingState }) => {
       <Card className="bg-white/10 backdrop-blur-sm border-2 border-blue-300 shadow-2xl relative overflow-hidden">
         <CardContent className="p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-blue-900 mb-2">Cast Your Line!</h2>
-            <p className="text-blue-700">Click to catch fish</p>
+            <h2 className="text-2xl font-bold text-blue-900 mb-2">
+              {gameState.fishingState === 'ready' && 'Cast Your Line!'}
+              {gameState.fishingState === 'casting' && 'Casting...'}
+              {gameState.fishingState === 'waiting' && 'Reel It In!'}
+              {gameState.fishingState === 'reeling' && 'Reeling...'}
+            </h2>
+            <p className="text-blue-700">
+              {gameState.fishingState === 'ready' && 'Click "Cast" to start fishing'}
+              {gameState.fishingState === 'casting' && 'Casting your line into the water...'}
+              {gameState.fishingState === 'waiting' && 'Click "Reel In" to catch the fish!'}
+              {gameState.fishingState === 'reeling' && 'Reeling in your catch...'}
+            </p>
           </div>
+
+          {/* Progress Bars */}
+          {(gameState.fishingState === 'casting' || gameState.fishingState === 'reeling') && (
+            <div className="mb-4 w-full max-w-md mx-auto">
+              {gameState.fishingState === 'casting' && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-blue-700">
+                    <span>Casting Progress</span>
+                    <span>{Math.round(gameState.castingProgress)}%</span>
+                  </div>
+                  <Progress value={gameState.castingProgress} className="w-full" />
+                </div>
+              )}
+              {gameState.fishingState === 'reeling' && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-blue-700">
+                    <span>Reeling Progress</span>
+                    <span>{Math.round(gameState.reelingProgress)}%</span>
+                  </div>
+                  <Progress value={gameState.reelingProgress} className="w-full" />
+                </div>
+              )}
+            </div>
+          )}
           
-          {/* Clickable Fish */}
-          <div className="relative">
+          {/* Fishing Buttons */}
+          <div className="relative flex gap-4 justify-center">
             <Button
-              onClick={handleClick}
-              className={`w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-4 border-white shadow-2xl transition-all duration-150 ${
-                isClicking ? 'scale-95' : 'scale-100 hover:scale-105'
+              onClick={handleCast}
+              disabled={gameState.fishingState !== 'ready'}
+              className={`w-32 h-32 rounded-full bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 border-4 border-white shadow-2xl transition-all duration-150 ${
+                gameState.fishingState === 'ready' ? 'scale-100 hover:scale-105' : 'scale-95 opacity-50'
               }`}
             >
-              <div className="text-8xl filter drop-shadow-lg">
-                🎣
+              <div className="text-center">
+                <div className="text-3xl filter drop-shadow-lg">🎯</div>
+                <div className="text-sm font-bold text-white mt-1">CAST</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={handleReel}
+              disabled={gameState.fishingState !== 'waiting'}
+              className={`w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 border-4 border-white shadow-2xl transition-all duration-150 ${
+                gameState.fishingState === 'waiting' ? 'scale-100 hover:scale-105' : 'scale-95 opacity-50'
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-3xl filter drop-shadow-lg">🎣</div>
+                <div className="text-sm font-bold text-white mt-1">REEL IN</div>
               </div>
             </Button>
 
