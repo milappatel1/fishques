@@ -183,6 +183,7 @@ function App() {
             <FishingArea 
               onCatch={handleFishCatch} 
               gameState={gameState}
+              onUpdateFishingState={handleUpdateFishingState}
             />
           </div>
         );
