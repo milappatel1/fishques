@@ -44,6 +44,19 @@ const Inventory = ({ gameState, onSellFish }) => {
 
   const totalValue = inventory.reduce((sum, fish) => sum + (fish.value * fish.quantity), 0);
 
+  const sellAllFish = () => {
+    if (totalValue > 0) {
+      const confirmSell = window.confirm(
+        `Are you sure you want to sell all fish for ${totalValue} coins?`
+      );
+      
+      if (confirmSell) {
+        onSellFish(totalValue);
+        setInventory([]);
+      }
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
@@ -60,8 +73,18 @@ const Inventory = ({ gameState, onSellFish }) => {
                 <Coins className="w-6 h-6 text-yellow-600" />
                 <span className="font-semibold text-yellow-900">Total Inventory Value:</span>
               </div>
-              <div className="text-2xl font-bold text-yellow-800">
-                {totalValue} coins
+              <div className="flex items-center gap-4">
+                <div className="text-2xl font-bold text-yellow-800">
+                  {totalValue} coins
+                </div>
+                {totalValue > 0 && (
+                  <Button 
+                    onClick={sellAllFish}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold"
+                  >
+                    Sell All Fish
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>
