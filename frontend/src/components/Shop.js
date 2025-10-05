@@ -145,16 +145,39 @@ const Shop = ({ gameState, onPurchaseBuilding, onPurchaseUpgrade }) => {
                       </div>
                     </div>
 
-                    <Button 
-                      onClick={() => purchaseBuilding(building.id)}
-                      disabled={!canAfford}
-                      className={`w-full ${canAfford 
-                        ? 'bg-green-600 hover:bg-green-700' 
-                        : 'bg-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {canAfford ? 'Purchase' : 'Not enough coins'}
-                    </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => purchaseBuilding(building.id, 1)}
+                        disabled={!canAfford}
+                        className={`w-full ${canAfford 
+                          ? 'bg-green-600 hover:bg-green-700' 
+                          : 'bg-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        {canAfford ? 'Buy 1' : 'Not enough coins'}
+                      </Button>
+                      
+                      {building.owned > 0 && (
+                        <div className="grid grid-cols-3 gap-1">
+                          {[10, 25, 100].map(qty => {
+                            const bulkCost = getBulkCost(building, qty);
+                            const canAffordBulk = gameState.coins >= bulkCost;
+                            return (
+                              <Button
+                                key={qty}
+                                onClick={() => purchaseBuilding(building.id, qty)}
+                                disabled={!canAffordBulk}
+                                variant="outline"
+                                size="sm"
+                                className={canAffordBulk ? "hover:bg-green-50" : "opacity-50"}
+                              >
+                                Buy {qty}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               );
